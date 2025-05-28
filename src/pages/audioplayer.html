@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEGRE Audio Player Pro</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #player-container {
+            width: 100%;
+            height: 100%;
+            max-width: 400px;
+            max-height: 400px;
+            aspect-ratio: 1 / 1;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        #player-container:hover {
+            transform: scale(1.02);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        #vinyl-disc {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: 
+                radial-gradient(circle at center, transparent 20%, rgba(0,0,0,0.8) 21%, rgba(0,0,0,0.8) 25%, transparent 26%),
+                radial-gradient(circle at center, #333 30%, #222 32%, #333 34%, #222 36%, #333 38%, #222 40%),
+                radial-gradient(circle at center, #111 45%, #000 50%);
+            animation: rotate 6s linear infinite;
+            animation-play-state: paused;
+        }
+
+        #vinyl-disc.playing {
+            animation-play-state: running;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        #album-art {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 60%;
+            height: 60%;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            background-size: cover;
+            background-position: center;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        #overlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        #player-container:hover #overlay {
+            opacity: 1;
+        }
+
+        #track-info {
+            color: white;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #track-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            line-height: 1.2;
+            max-width: 80%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        #track-artist {
+            font-size: 12px;
+            opacity: 0.8;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        #controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.1);
+        }
+
+        .control-btn:active {
+            transform: scale(0.95);
+        }
+
+        #play-btn {
+            width: 55px;
+            height: 55px;
+            font-size: 24px;
+        }
+
+        #progress-container {
+            width: 80%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        #progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+
+        #progress-time {
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 10px;
+        }
+
+        #volume-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #volume-slider {
+            width: 80px;
+            accent-color: #4ecdc4;
+            cursor: pointer;
+        }
+
+        #volume-icon {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+        }
+
+        #settings-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        #player-container:hover #settings-btn {
+            opacity: 0.8;
+        }
+
+        #settings-btn:hover {
+            opacity: 1;
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .connection-status {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ff4444;
+            transition: background 0.3s;
+        }
+
+        .connection-status.connected {
+            background: #44ff44;
+            box-shadow: 0 0 8px rgba(68, 255, 68, 0.6);
+        }
+
+        #playlist-info {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        #player-container:hover #playlist-info {
+            opacity: 1;
+        }
+
+        .error-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 68, 68, 0.9);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            text-align: center;
+            display: none;
+            z-index: 1000;
+        }
+
+        /* Visualizer */
+        #visualizer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30%;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        .visualizer-bar {
+            position: absolute;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to top, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2));
+            border-radius: 2px 2px 0 0;
+            transition: height 0.1s ease;
+        }
+
+        /* Loading state */
+        .loading {
+            opacity: 0.5;
+        }
+
+        .loading #vinyl-disc {
+            animation: rotate 2s ease-in-out infinite alternate;
+        }
+
+        /* Responsive design */
+        @media (max-width: 200px) {
+            #track-title { font-size: 12px; }
+            #track-artist { font-size: 10px; }
+            .control-btn { width: 35px; height: 35px; font-size: 14px; }
+            #play-btn { width: 45px; height: 45px; font-size: 18px; }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/jsmediatags@3.9.7/dist/jsmediatags.min.js"></script>
+</head>
+<body>
+    <div id="player-container" class="loading">
+        <div id="vinyl-disc"></div>
+        <div id="album-art"></div>
+        
+        <div id="overlay">
+            <div id="track-info">
+                <div id="track-title">Loading...</div>
+                <div id="track-artist">Please wait</div>
+            </div>
+            
+            <div id="progress-time">
+                <span id="current-time">0:00</span>
+                <span id="total-time">0:00</span>
+            </div>
+            
+            <div id="progress-container">
+                <div id="progress-bar"></div>
+            </div>
+            
+            <div id="controls">
+                <button class="control-btn" id="prev-btn" title="Previous">⏮</button>
+                <button class="control-btn" id="play-btn" title="Play/Pause">▶</button>
+                <button class="control-btn" id="next-btn" title="Next">⏭</button>
+                <button class="control-btn" id="shuffle-btn" title="Shuffle">🔀</button>
+            </div>
+            
+            <div id="volume-container">
+                <span id="volume-icon">🔊</span>
+                <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.8">
+            </div>
+        </div>
+        
+        <button id="settings-btn" title="Settings">⚙</button>
+        <div class="connection-status" id="connection-status"></div>
+        <div id="playlist-info">Track 1 of 50</div>
+        <div id="visualizer"></div>
+    </div>
+    
+    <audio id="audio" preload="metadata"></audio>
+    <div class="error-message" id="error-message"></div>
+
+    <script>
+        class DegreAudioPlayerPro {
+            constructor() {
+                this.config = window.degreConfig || this.createFallbackConfig();
+                
+                // Default playlist (your existing tracks)
+                this.defaultPlaylist = [
+                    "https://www.lucadegregorio.it/lucadegre/climber/summit-state-of-mind.mp3",
+                    "https://www.lucadegregorio.it/lucadegre/climber/stand-up-and-climb.mp3",
+                    "https://www.lucadegregorio.it/lucadegre/climber/the-ascent-calls.mp3",
+                    "https://www.lucadegregorio.it/lucadegre/climber/the-climb-within.mp3",
+                    "https://www.lucadegregorio.it/lucadegre/race-time/01-not-a-climber.mp3",
+                    "https://www.lucadegregorio.it/lucadegre/race-time/02-dont-stop.mp3",
+                    "https://www.lucadegregorio.it/lucadegre/race-time/03-rooftop-rendezvous.mp3",
+                    "https://www.lucadegregorio.it/lucadegre/race-time/04-sweet-as-sugar-tough-as-stone.mp3",
+                    "https://www.lucadegregorio.it/lucadegre/race-time/05-mayan-mountainside-kom.mp3",
+                    "https://www.lucadegregorio.it/lucadegre/race-time/06-four-horsemen.mp3"
+                ];
+                
+                this.playlist = [...this.defaultPlaylist];
+                this.currentTrackIndex = 0;
+                this.isPlaying = false;
+                this.isShuffleEnabled = false;
+                this.originalPlaylist = [...this.playlist];
+                
+                this.elements = {
+                    container: document.getElementById('player-container'),
+                    vinylDisc: document.getElementById('vinyl-disc'),
+                    albumArt: document.getElementById('album-art'),
+                    trackTitle: document.getElementById('track-title'),
+                    trackArtist: document.getElementById('track-artist'),
+                    playBtn: document.getElementById('play-btn'),
+                    prevBtn: document.getElementById('prev-btn'),
+                    nextBtn: document.getElementById('next-btn'),
+                    shuffleBtn: document.getElementById('shuffle-btn'),
+                    volumeSlider: document.getElementById('volume-slider'),
+                    volumeIcon: document.getElementById('volume-icon'),
+                    progressContainer: document.getElementById('progress-container'),
+                    progressBar: document.getElementById('progress-bar'),
+                    currentTime: document.getElementById('current-time'),
+                    totalTime: document.getElementById('total-time'),
+                    playlistInfo: document.getElementById('playlist-info'),
+                    settingsBtn: document.getElementById('settings-btn'),
+                    connectionStatus: document.getElementById('connection-status'),
+                    errorMessage: document.getElementById('error-message'),
+                    visualizer: document.getElementById('visualizer'),
+                    audio: document.getElementById('audio')
+                };
+                
+                this.audioContext = null;
+                this.analyser = null;
+                this.visualizerBars = [];
+                
+                this.init();
+            }
+
+            createFallbackConfig() {
+                return {
+                    get: (path) => {
+                        const defaults = {
+                            'audioPlayer.volume': 0.8,
+                            'audioPlayer.shuffle': false,
+                            'audioPlayer.autoplay': false,
+                            'audioPlayer.showAlbumArt': true,
+                            'audioPlayer.visualizer.enabled': true,
+                            'audioPlayer.customPlaylists': []
+                        };
+                        return defaults[path] || null;
+                    }
+                };
+            }
+
+            async init() {
+                try {
+                    this.setupEventListeners();
+                    this.setupVisualizer();
+                    this.applyConfiguration();
+                    this.loadTrack(this.currentTrackIndex);
+                    
+                    console.log('[DEGRE AudioPlayer] Initialized successfully');
+                    this.elements.container.classList.remove('loading');
+                } catch (error) {
+                    console.error('[DEGRE AudioPlayer] Initialization failed:', error);
+                    this.showError('Initialization failed');
+                }
+            }
+
+            setupEventListeners() {
+                // Audio events
+                this.elements.audio.addEventListener('loadedmetadata', () => {
+                    this.updateDuration();
+                });
+
+                this.elements.audio.addEventListener('timeupdate', () => {
+                    this.updateProgress();
+                });
+
+                this.elements.audio.addEventListener('ended', () => {
+                    this.nextTrack();
+                });
+
+                this.elements.audio.addEventListener('play', () => {
+                    this.isPlaying = true;
+                    this.updatePlayButton();
+                    this.elements.vinylDisc.classList.add('playing');
+                });
+
+                this.elements.audio.addEventListener('pause', () => {
+                    this.isPlaying = false;
+                    this.updatePlayButton();
+                    this.elements.vinylDisc.classList.remove('playing');
+                });
+
+                this.elements.audio.addEventListener('error', (e) => {
+                    console.error('[DEGRE AudioPlayer] Audio error:', e);
+                    this.showError('Failed to load track');
+                    this.nextTrack();
+                });
+
+                // Control events
+                this.elements.playBtn.addEventListener('click', () => {
+                    this.togglePlayPause();
+                });
+
+                this.elements.prevBtn.addEventListener('click', () => {
+                    this.prevTrack();
+                });
+
+                this.elements.nextBtn.addEventListener('click', () => {
+                    this.nextTrack();
+                });
+
+                this.elements.shuffleBtn.addEventListener('click', () => {
+                    this.toggleShuffle();
+                });
+
+                this.elements.volumeSlider.addEventListener('input', () => {
+                    this.setVolume(this.elements.volumeSlider.value);
+                });
+
+                this.elements.progressContainer.addEventListener('click', (e) => {
+                    this.seekTo(e);
+                });
+
+                this.elements.settingsBtn.addEventListener('click', () => {
+                    this.openSettings();
+                });
+
+                // Configuration changes
+                if (this.config.onChange) {
+                    this.config.onChange((newConfig) => {
+                        this.applyConfiguration();
+                    });
+                }
+            }
+
+            setupVisualizer() {
+                if (!this.config.get('audioPlayer.visualizer.enabled')) return;
+
+                try {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    this.analyser = this.audioContext.createAnalyser();
+                    this.analyser.fftSize = 64;
+                    
+                    const source = this.audioContext.createMediaElementSource(this.elements.audio);
+                    source.connect(this.analyser);
+                    this.analyser.connect(this.audioContext.destination);
+                    
+                    this.createVisualizerBars();
+                    this.animateVisualizer();
+                } catch (error) {
+                    console.warn('[DEGRE AudioPlayer] Visualizer setup failed:', error);
+                }
+            }
+
+            createVisualizerBars() {
+                const barCount = 20;
+                for (let i = 0; i < barCount; i++) {
+                    const bar = document.createElement('div');
+                    bar.className = 'visualizer-bar';
+                    bar.style.left = `${(i / barCount) * 100}%`;
+                    this.elements.visualizer.appendChild(bar);
+                    this.visualizerBars.push(bar);
+                }
+            }
+
+            animateVisualizer() {
+                if (!this.analyser || !this.isPlaying) {
+                    requestAnimationFrame(() => this.animateVisualizer());
+                    return;
+                }
+
+                const dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+                this.analyser.getByteFrequencyData(dataArray);
+
+                this.visualizerBars.forEach((bar, index) => {
+                    const value = dataArray[index] || 0;
+                    const height = (value / 255) * 100;
+                    bar.style.height = `${height}%`;
+                });
+
+                requestAnimationFrame(() => this.animateVisualizer());
+            }
+
+            loadTrack(index) {
+                if (index < 0 || index >= this.playlist.length) return;
+
+                this.currentTrackIndex = index;
+                const trackUrl = this.playlist[index];
+                
+                this.elements.audio.src = trackUrl;
+                this.elements.trackTitle.textContent = 'Loading...';
+                this.elements.trackArtist.textContent = '';
+                
+                // Update playlist info
+                this.elements.playlistInfo.textContent = `Track ${index + 1} of ${this.playlist.length}`;
+                
+                // Load metadata
+                this.loadTrackMetadata(trackUrl);
+                
+                // Set default album art
+                this.setAlbumArt('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="%23333"/><circle cx="50" cy="50" r="15" fill="%23666"/></svg>');
+            }
+
+            loadTrackMetadata(url) {
+                if (typeof jsmediatags !== 'undefined') {
+                    jsmediatags.read(url, {
+                        onSuccess: (tag) => {
+                            const tags = tag.tags;
+                            this.elements.trackTitle.textContent = tags.title || this.extractTitleFromUrl(url);
+                            this.elements.trackArtist.textContent = tags.artist || 'Luca DEGRE';
+                            
+                            if (tags.picture) {
+                                const { data, format } = tags.picture;
+                                const base64String = data.reduce((acc, byte) => acc + String.fromCharCode(byte), '');
+                                this.setAlbumArt(`data:${format};base64,${btoa(base64String)}`);
+                            }
+                        },
+                        onError: () => {
+                            this.elements.trackTitle.textContent = this.extractTitleFromUrl(url);
+                            this.elements.trackArtist.textContent = 'Luca DEGRE';
+                        }
+                    });
+                } else {
+                    this.elements.trackTitle.textContent = this.extractTitleFromUrl(url);
+                    this.elements.trackArtist.textContent = 'Luca DEGRE';
+                }
+            }
+
+            extractTitleFromUrl(url) {
+                const filename = url.split('/').pop();
+                return filename.replace(/\.\w+$/, '').replace(/[-_]/g, ' ').replace(/^\d+[-.]?\s*/, '');
+            }
+
+            setAlbumArt(url) {
+                if (this.config.get('audioPlayer.showAlbumArt')) {
+                    this.elements.albumArt.style.backgroundImage = `url('${url}')`;
+                    this.elements.container.style.backgroundImage = `url('${url}')`;
+                }
+            }
+
+            togglePlayPause() {
+                if (this.elements.audio.paused) {
+                    this.play();
+                } else {
+                    this.pause();
+                }
+            }
+
+            async play() {
+                try {
+                    if (this.audioContext && this.audioContext.state === 'suspended') {
+                        await this.audioContext.resume();
+                    }
+                    await this.elements.audio.play();
+                } catch (error) {
+                    console.error('[DEGRE AudioPlayer] Play error:', error);
+                    this.showError('Failed to play audio');
+                }
+            }
+
+            pause() {
+                this.elements.audio.pause();
+            }
+
+            nextTrack() {
+                let nextIndex;
+                if (this.isShuffleEnabled) {
+                    nextIndex = Math.floor(Math.random() * this.playlist.length);
+                } else {
+                    nextIndex = (this.currentTrackIndex + 1) % this.playlist.length;
+                }
+                this.loadTrack(nextIndex);
+                
+                if (this.isPlaying) {
+                    setTimeout(() => this.play(), 100);
+                }
+            }
+
+            prevTrack() {
+                let prevIndex;
+                if (this.elements.audio.currentTime > 3) {
+                    // If more than 3 seconds played, restart current track
+                    this.elements.audio.currentTime = 0;
+                    return;
+                }
+                
+                if (this.isShuffleEnabled) {
+                    prevIndex = Math.floor(Math.random() * this.playlist.length);
+                } else {
+                    prevIndex = this.currentTrackIndex === 0 ? this.playlist.length - 1 : this.currentTrackIndex - 1;
+                }
+                this.loadTrack(prevIndex);
+                
+                if (this.isPlaying) {
+                    setTimeout(() => this.play(), 100);
+                }
+            }
+
+            toggleShuffle() {
+                this.isShuffleEnabled = !this.isShuffleEnabled;
+                this.elements.shuffleBtn.style.background = this.isShuffleEnabled ? 
+                    'rgba(76, 205, 196, 0.6)' : 'rgba(255, 255, 255, 0.2)';
+                
+                if (this.isShuffleEnabled) {
+                    this.shufflePlaylist();
+                } else {
+                    this.playlist = [...this.originalPlaylist];
+                }
+            }
+
+            shufflePlaylist() {
+                const currentTrack = this.playlist[this.currentTrackIndex];
+                this.playlist = [...this.playlist].sort(() => Math.random() - 0.5);
+                this.currentTrackIndex = this.playlist.indexOf(currentTrack);
+            }
+
+            setVolume(value) {
+                this.elements.audio.volume = value;
+                this.updateVolumeIcon(value);
+            }
+
+            updateVolumeIcon(volume) {
+                if (volume === 0) {
+                    this.elements.volumeIcon.textContent = '🔇';
+                } else if (volume < 0.3) {
+                    this.elements.volumeIcon.textContent = '🔈';
+                } else if (volume < 0.7) {
+                    this.elements.volumeIcon.textContent = '🔉';
+                } else {
+                    this.elements.volumeIcon.textContent = '🔊';
+                }
+            }
+
+            seekTo(event) {
+                const rect = this.elements.progressContainer.getBoundingClientRect();
+                const percent = (event.clientX - rect.left) / rect.width;
+                const seekTime = percent * this.elements.audio.duration;
+                this.elements.audio.currentTime = seekTime;
+            }
+
+            updateProgress() {
+                if (this.elements.audio.duration) {
+                    const percent = (this.elements.audio.currentTime / this.elements.audio.duration) * 100;
+                    this.elements.progressBar.style.width = `${percent}%`;
+                    
+                    this.elements.currentTime.textContent = this.formatTime(this.elements.audio.currentTime);
+                }
+            }
+
+            updateDuration() {
+                this.elements.totalTime.textContent = this.formatTime(this.elements.audio.duration);
+            }
+
+            formatTime(seconds) {
+                if (!seconds || isNaN(seconds)) return '0:00';
+                const mins = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return `${mins}:${secs.toString().padStart(2, '0')}`;
+            }
+
+            updatePlayButton() {
+                this.elements.playBtn.textContent = this.isPlaying ? '⏸' : '▶';
+            }
+
+            applyConfiguration() {
+                // Apply volume
+                const volume = this.config.get('audioPlayer.volume');
+                if (volume !== null) {
+                    this.elements.volumeSlider.value = volume;
+                    this.setVolume(volume);
+                }
+
+                // Apply shuffle
+                const shuffle = this.config.get('audioPlayer.shuffle');
+                if (shuffle !== null) {
+                    this.isShuffleEnabled = shuffle;
+                    this.elements.shuffleBtn.style.background = shuffle ? 
+                        'rgba(76, 205, 196, 0.6)' : 'rgba(255, 255, 255, 0.2)';
+                }
+
+                // Load custom playlists
+                const customPlaylists = this.config.get('audioPlayer.customPlaylists');
+                if (customPlaylists && customPlaylists.length > 0) {
+                    // Use first custom playlist if available
+                    this.playlist = [...customPlaylists[0].tracks];
+                    this.originalPlaylist = [...this.playlist];
+                }
+
+                // Apply autoplay
+                if (this.config.get('audioPlayer.autoplay')) {
+                    setTimeout(() => this.play(), 1000);
+                }
+            }
+
+            showError(message) {
+                this.elements.errorMessage.textContent = message;
+                this.elements.errorMessage.style.display = 'block';
+                
+                setTimeout(() => {
+                    this.elements.errorMessage.style.display = 'none';
+                }, 5000);
+            }
+
+            openSettings() {
+                if (window.sauce && window.sauce.openWindow) {
+                    window.sauce.openWindow('degre-settings');
+                } else {
+                    console.log('[DEGRE AudioPlayer] Settings window not available');
+                }
+            }
+
+            // Public API
+            getCurrentTrack() {
+                return {
+                    index: this.currentTrackIndex,
+                    url: this.playlist[this.currentTrackIndex],
+                    title: this.elements.trackTitle.textContent,
+                    artist: this.elements.trackArtist.textContent,
+                    isPlaying: this.isPlaying,
+                    currentTime: this.elements.audio.currentTime,
+                    duration: this.elements.audio.duration
+                };
+            }
+
+            getPlaylist() {
+                return this.playlist;
+            }
+
+            addToPlaylist(tracks) {
+                if (Array.isArray(tracks)) {
+                    this.playlist.push(...tracks);
+                    this.originalPlaylist.push(...tracks);
+                } else {
+                    this.playlist.push(tracks);
+                    this.originalPlaylist.push(tracks);
+                }
+            }
+
+            clearPlaylist() {
+                this.playlist = [];
+                this.originalPlaylist = [];
+                this.currentTrackIndex = 0;
+            }
+
+            loadPlaylist(tracks) {
+                this.clearPlaylist();
+                this.addToPlaylist(tracks);
+                this.loadTrack(0);
+            }
+
+            destroy() {
+                this.pause();
+                if (this.audioContext) {
+                    this.audioContext.close();
+                }
+                console.log('[DEGRE AudioPlayer] Destroyed');
+            }
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                window.degreAudioPlayer = new DegreAudioPlayerPro();
+                console.log('[DEGRE AudioPlayer] Ready');
+            } catch (error) {
+                console.error('[DEGRE AudioPlayer] Startup failed:', error);
+            }
+        });
+
+        // Handle visibility changes
+        document.addEventListener('visibilitychange', () => {
+            if (window.degreAudioPlayer) {
+                if (document.hidden) {
+                    // Optionally pause when hidden
+                    // window.degreAudioPlayer.pause();
+                } else {
+                    // Resume audio context if needed
+                    if (window.degreAudioPlayer.audioContext && 
+                        window.degreAudioPlayer.audioContext.state === 'suspended') {
+                        window.degreAudioPlayer.audioContext.resume();
+                    }
+                }
+            }
+        });
+
+        // Cleanup on unload
+        window.addEventListener('beforeunload', () => {
+            if (window.degreAudioPlayer) {
+                window.degreAudioPlayer.destroy();
+            }
+        });
+    </script>
+</body>
+</html>

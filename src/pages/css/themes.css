@@ -1,0 +1,133 @@
+/**
+ * DEGRE Professional Mods - Theme System
+ * Advanced theming for all components
+ */
+
+/* Theme Base */
+.degre-theme {
+    transition: all 0.3s ease;
+}
+
+/* Dark Theme (Default) */
+.degre-theme-dark {
+    --theme-bg-primary: rgba(0, 0, 0, 0.9);
+    --theme-bg-secondary: rgba(255, 255, 255, 0.1);
+    --theme-bg-tertiary: rgba(255, 255, 255, 0.05);
+    --theme-text-primary: #ffffff;
+    --theme-text-secondary: #cccccc;
+    --theme-text-tertiary: #999999;
+    --theme-border: rgba(255, 255, 255, 0.2);
+    --theme-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    --theme-accent: #4299e1;
+    --theme-accent-hover: #3182ce;
+}
+
+/* Light Theme */
+.degre-theme-light {
+    --theme-bg-primary: rgba(255, 255, 255, 0.95);
+    --theme-bg-secondary: rgba(0, 0, 0, 0.05);
+    --theme-bg-tertiary: rgba(0, 0, 0, 0.02);
+    --theme-text-primary: #2d3748;
+    --theme-text-secondary: #4a5568;
+    --theme-text-tertiary: #718096;
+    --theme-border: rgba(0, 0, 0, 0.1);
+    --theme-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    --theme-accent: #3182ce;
+    --theme-accent-hover: #2c5aa0;
+}
+
+/* Cyberpunk Theme */
+.degre-theme-cyberpunk {
+    --theme-bg-primary: rgba(10, 0, 30, 0.95);
+    --theme-bg-secondary: rgba(255, 0, 255, 0.1);
+    --theme-bg-tertiary: rgba(0, 255, 255, 0.05);
+    --theme-text-primary: #00ffff;
+    --theme-text-secondary: #ff00ff;
+    --theme-text-tertiary: #ffff00;
+    --theme-border: rgba(0, 255, 255, 0.3);
+    --theme-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    --theme-accent: #ff0080;
+    --theme-accent-hover: #cc0066;
+}
+
+/* Racing Theme */
+.degre-theme-racing {
+    --theme-bg-primary: rgba(20, 20, 20, 0.95);
+    --theme-bg-secondary: rgba(255, 69, 0, 0.1);
+    --theme-bg-tertiary: rgba(255, 215, 0, 0.05);
+    --theme-text-primary: #ffffff;
+    --theme-text-secondary: #ff4500;
+    --theme-text-tertiary: #ffd700;
+    --theme-border: rgba(255, 69, 0, 0.3);
+    --theme-shadow: 0 0 20px rgba(255, 69, 0, 0.2);
+    --theme-accent: #ff4500;
+    --theme-accent-hover: #cc3600;
+}
+
+/* Minimal Theme */
+.degre-theme-minimal {
+    --theme-bg-primary: rgba(248, 250, 252, 0.98);
+    --theme-bg-secondary: rgba(241, 245, 249, 0.8);
+    --theme-bg-tertiary: rgba(226, 232, 240, 0.5);
+    --theme-text-primary: #334155;
+    --theme-text-secondary: #64748b;
+    --theme-text-tertiary: #94a3b8;
+    --theme-border: #e2e8f0;
+    --theme-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --theme-accent: #6366f1;
+    --theme-accent-hover: #4f46e5;
+}
+
+/* Apply theme variables to components */
+.degre-theme * {
+    color: var(--theme-text-primary);
+    border-color: var(--theme-border);
+}
+
+.degre-theme .degre-card,
+.degre-theme .degre-container {
+    background: var(--theme-bg-primary);
+    box-shadow: var(--theme-shadow);
+}
+
+.degre-theme .degre-button-primary {
+    background: var(--theme-accent);
+}
+
+.degre-theme .degre-button-primary:hover {
+    background: var(--theme-accent-hover);
+}
+
+/* Dynamic theme switching */
+.degre-theme-switcher {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+    display: flex;
+    gap: 5px;
+    padding: 5px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+}
+
+.degre-theme-option {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.degre-theme-option.active {
+    border-color: white;
+    transform: scale(1.1);
+}
+
+.degre-theme-dark-option { background: #1a202c; }
+.degre-theme-light-option { background: #f7fafc; }
+.degre-theme-cyberpunk-option { background: linear-gradient(45deg, #00ffff, #ff00ff); }
+.degre-theme-racing-option { background: linear-gradient(45deg, #ff4500, #ffd700); }
+.degre-theme-minimal-option { background: #6366f1; }

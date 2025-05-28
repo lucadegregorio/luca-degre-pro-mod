@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEGRE Settings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .header h1 {
+            color: #4a5568;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #718096;
+            font-size: 1.1rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #718096;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            color: #4299e1;
+            border-bottom-color: #4299e1;
+            background: rgba(66, 153, 225, 0.1);
+        }
+
+        .tab:hover {
+            color: #4299e1;
+            background: rgba(66, 153, 225, 0.05);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 10px;
+            border-left: 4px solid #4299e1;
+        }
+
+        .section h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .setting-group {
+            margin-bottom: 20px;
+        }
+
+        .setting-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .setting-label {
+            flex: 1;
+            margin-right: 20px;
+        }
+
+        .setting-label h4 {
+            color: #2d3748;
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .setting-label p {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        .setting-control {
+            flex-shrink: 0;
+        }
+
+        input[type="range"] {
+            width: 150px;
+            accent-color: #4299e1;
+        }
+
+        input[type="number"] {
+            width: 80px;
+            padding: 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        input[type="color"] {
+            width: 50px;
+            height: 35px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        select {
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 5px;
+            background: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 24px;
+            background: #cbd5e0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: #4299e1;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(26px);
+        }
+
+        .zone-editor {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .zone-editor h4 {
+            margin-bottom: 10px;
+            color: #2d3748;
+        }
+
+        .zone-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .zone-preview {
+            width: 30px;
+            height: 20px;
+            border-radius: 3px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .playlist-editor {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .playlist-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            background: #f7fafc;
+            border-radius: 5px;
+            margin-bottom: 8px;
+        }
+
+        .playlist-item input[type="url"] {
+            flex: 1;
+            padding: 6px;
+            border: 1px solid #e2e8f0;
+            border-radius: 3px;
+            font-size: 0.9rem;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #4299e1;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #3182ce;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+        }
+
+        .btn-small {
+            padding: 5px 10px;
+            font-size: 0.8rem;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .status-message {
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .status-success {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 1px solid #9ae6b4;
+        }
+
+        .status-error {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 1px solid #feb2b2;
+        }
+
+        .value-display {
+            font-weight: 600;
+            color: #4299e1;
+            margin-left: 10px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+
+            .setting-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .setting-control {
+                width: 100%;
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+            }
+
+            .zone-controls {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>DEGRE Mods Settings</h1>
+            <p>Configure your Sauce4Zwift mods for the perfect riding experience</p>
+        </div>
+
+        <div class="status-message" id="status-message"></div>
+
+        <div class="tabs">
+            <button class="tab active" data-tab="powerbar">Power Bar</button>
+            <button class="tab" data-tab="audioplayer">Audio Player</button>
+            <button class="tab" data-tab="dashboard">Dashboard</button>
+            <button class="tab" data-tab="general">General</button>
+        </div>
+
+        <!-- Power Bar Settings -->
+        <div class="tab-content active" id="powerbar">
+            <div class="section">
+                <h3>Power Zones Configuration</h3>
+                
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h4>Enable Power Bar</h4>
+                        <p>Show/hide the power bar overlay</p>
+                    </div>
+                    <div class="setting-control">
+                        <div class="toggle-switch" id="powerbar-enabled"></div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h4>Max Watts/kg</h4>
+                        <p>Maximum W/kg for 100% bar height</p>
+                    </div>
+                    <div class="setting-control">
+                        <input type="range" id="max-wkg" min="5" max="15" step="0.5" value="10">
+                        <span class="value-display" id="max-wkg-display">10.0</span>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h4>Show Zone Labels</h4>
+                        <p>Display zone names on the power bar</p>
+                    </div>
+                    <div class="setting-control">
+                        <div class="toggle-switch" id="show-zone-labels"></div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h4>Smoothing</h4>
+                        <p>Apply smoothing to power readings</p>
+                    </div>
+                    <div class="setting-control">
+                        <div class="toggle-switch" id="power-smoothing"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Power Zones</h3>
+                <div id="zones-container">
+                    <!-- Zones will be populated dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Audio Player Settings -->
+        <div class="tab-content" id="audioplayer">
+            <div class="section">
+                <h3>Player Configuration</h3>
+
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h4>Enable Audio Player</h4>
+                        <p>Show/hide the audio player overlay</p>
+                    </div>
+                    <div class="setting-control">
+                        <div class="toggle-switch" id="audioplayer-enabled"></div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h4>Default Volume</h4>
+                        <p>Starting volume level (0-100%)</p>
+                    </div>
+                    <div class="setting-control">
+                        <input type="range" id="default-volume" min="0" max="1" step="0.01" value="0.8">
+                        <span class="value-display" id="volume-display">80%</span>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h4>Shuffle by Default</h4>
+                        <p>Start with shuffle mode enabled</p>
+                    </div>
+                    <div class="setting-control">
+                        <div class="toggle-switch" id="default-shuffle"></div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h4>Autoplay</h4>
+                        <p>Automatically start playing when loaded</p>
+                    </div>
+                    <div class="setting-control">
+                        <div class="toggle-switch" id="autoplay"></div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h4>Show Visualizer</h4>
+                        <p>Display audio frequency visualizer</p>
+                    </div>
+                    <div class="setting-control">
+                        <div class="toggle-switch" id="show-visualizer"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Custom Playlists</h3>
+                <div id="playlists-container">
+                    <div class="playlist-editor">
+                        <h4>Default Playlist</h4>
+                        <div id="playlist-items">
+                            <!-- Playlist items will be populated dynamically -->
+                        </div>
+                        <button class="btn btn-secondary btn-small" id="add-track">Add Track</button>
+                    </div>
+                </div>
+                <button class="btn btn-primary" id="create-playlist">Create New Playlist</button>
+            </div>
+        </div>
+
+        <!-- Dashboard Settings -->
+        <div class="tab-content" id="dashboard">
+            <div class="section">
+                <h3>Dashboard Configuration</h3>
+
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h4>Enable Dashboard</h4>
+                        <p>Show/hide the data dashboard</p>
+                    </div>
+                    <div class="setting-control">
+                        <div class="toggle-switch" id="dashboard-enabled"></div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h4>Refresh Rate</h4>
+                        <p>Data update frequency (milliseconds)</p>
+                    </div>
+                    <div class="setting-control">
+                        <input type="number" id="refresh-rate" min="100" max="5000" step="100" value="1000">
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h4>Theme</h4>
+                        <p>Dashboard color scheme</p>
+                    </div>
+                    <div class="setting-control">
+                        <select id="dashboard-theme">
+                            <option value="dark">Dark</option>
+                            <option value="light">Light</option>
+                            <option value="auto">Auto</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h4>Units</h4>
+                        <p>Measurement system</p>
+                    </div>
+                    <div class="setting-control">
+                        <select id="units">
+                            <option value="metric">Metric</option>
+                            <option value="imperial">Imperial</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Displayed Metrics</h3>
+                <div class="setting-group">
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <h4>Power</h4>
+                            <p>Show current power output</p>
+                        </div>
+                        <div class="setting-control">
+                            <div class="toggle-switch" id="show-power"></div>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <h4>Speed</h4>
+                            <p>Show current speed</p>
+                        </div>
+                        <div class="setting-control">
+                            <div class="toggle-switch" id="show-speed"></div>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <h4>Heart Rate</h4>
+                            <p>Show current heart rate</p>
+                        </div>
+                        <div class="setting-control">
+                            <div class="toggle-switch" id="show-hr"></div>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <h4>Cadence</h4>
+                            <p>Show current cadence</p>
+                        </div>
+                        <div class="setting-control">
+                            <div class="toggle-switch" id="show-cadence"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- General Settings -->
+        <div class="tab-content" id="general">
+            <div class="section">
+                <h3>General Configuration</h3>
+
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h4>Debug Mode</h4>
+                        <p>Enable detailed logging for troubleshooting</p>
+                    </div>
+                    <div class="setting-control">
+                        <div class="toggle-switch" id="debug-mode"></div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h4>Auto Update</h4>
+                        <p>Automatically check for mod updates</p>
+                    </div>
+                    <div class="setting-control">
+                        <div class="toggle-switch" id="auto-update"></div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h4>Notifications</h4>
+                        <p>Show system notifications</p>
+                    </div>
+                    <div class="setting-control">
+                        <div class="toggle-switch" id="notifications"></div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h4>Language</h4>
+                        <p>Interface language</p>
+                    </div>
+                    <div class="setting-control">
+                        <select id="language">
+                            <option value="en">English</option>
+                            <option value="it">Italiano</option>
+                            <option value="fr">Français</option>
+                            <option value="de">Deutsch</option>
+                            <option value="es">Español</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Import/Export Settings</h3>
+                
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h4>Export Configuration</h4>
+                        <p>Save current settings to file</p>
+                    </div>
+                    <div class="setting-control">
+                        <button class="btn btn-secondary" id="export-config">Export</button>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h4>Import Configuration</h4>
+                        <p>Load settings from file</p>
+                    </div>
+                    <div class="setting-control">
+                        <input type="file" id="import-file" accept=".json" style="display: none;">
+                        <button class="btn btn-secondary" id="import-config">Import</button>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h4>Reset to Defaults</h4>
+                        <p>Restore all settings to default values</p>
+                    </div>
+                    <div class="setting-control">
+                        <button class="btn btn-danger" id="reset-config">Reset All</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-secondary" id="cancel-btn">Cancel</button>
+            <button class="btn btn-primary" id="save-btn">Save Settings</button>
+            <button class="btn btn-primary" id="apply-btn">Apply</button>
+        </div>
+    </div>
+
+    <script>
+        class DegreSettingsPanel {
+            constructor() {
+                this.config = window.degreConfig || this.createFallbackConfig();
+                this.originalConfig = null;
+                this.isDirty = false;
+                
+                this.elements = {
+                    tabs: document.querySelectorAll('.tab'),
+                    tabContents: document.querySelectorAll('.tab-content'),
+                    statusMessage: document.getElementById('status-message'),
+                    saveBtn: document.getElementById('save-btn'),
+                    applyBtn: document.getElementById('apply-btn'),
+                    cancelBtn: document.getElementById('cancel-btn')
+                };
+                
+                this.init();
+            }
+
+            createFallbackConfig() {
+                return {
+                    config: {},
+                    get: () => null,
+                    set: () => false,
+                    save: () => false,
+                    reset: () => false,
+                    export: () => '{}',
+                    import: () => false
+                };
+            }
+
+            init() {
+                this.originalConfig = JSON.parse(JSON.stringify(this.config.config || {}));
+                this.setupTabs();
+                this.setupEventListeners();
+                this.setupControls();
+                this.loadCurrentSettings();
+                
+                console.log('[DEGRE Settings] Initialized');
+            }
+
+            setupTabs() {
+                this.elements.tabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        const targetTab = tab.dataset.tab;
+                        this.switchTab(targetTab);
+                    });
+                });
+            }
+
+            switchTab(tabId) {
+                // Update tab buttons
+                this.elements.tabs.forEach(tab => {
+                    tab.classList.toggle('active', tab.dataset.tab === tabId);
+                });
+
+                // Update tab contents
+                this.elements.tabContents.forEach(content => {
+                    content.classList.toggle('active', content.id === tabId);
+                });
+            }
+
+            setupEventListeners() {
+                // Main action buttons
+                this.elements.saveBtn.addEventListener('click', () => this.saveSettings());
+                this.elements.applyBtn.addEventListener('click', () => this.applySettings());
+                this.elements.cancelBtn.addEventListener('click', () => this.cancelChanges());
+
+                // Import/Export buttons
+                document.getElementById('export-config').addEventListener('click', () => this.exportConfig());
+                document.getElementById('import-config').addEventListener('click', () => this.importConfig());
+                document.getElementById('reset-config').addEventListener('click', () => this.resetConfig());
+
+                // Import file handler
+                document.getElementById('import-file').addEventListener('change', (e) => this.handleFileImport(e));
+
+                // Playlist management
+                document.getElementById('add-track').addEventListener('click', () => this.addPlaylistTrack());
+                document.getElementById('create-playlist').addEventListener('click', () => this.createPlaylist());
+
+                // Track changes for all inputs
+                this.setupChangeTracking();
+            }
+
+            setupChangeTracking() {
+                const inputs = document.querySelectorAll('input, select, .toggle-switch');
+                inputs.forEach(input => {
+                    if (input.classList.contains('toggle-switch')) {
+                        input.addEventListener('click', () => this.markDirty());
+                    } else {
+                        input.addEventListener('change', () => this.markDirty());
+                        input.addEventListener('input', () => this.markDirty());
+                    }
+                });
+            }
+
+            setupControls() {
+                this.setupToggleSwitches();
+                this.setupRangeSliders();
+                this.setupZoneEditor();
+                this.setupPlaylistEditor();
+            }
+
+            setupToggleSwitches() {
+                document.querySelectorAll('.toggle-switch').forEach(toggle => {
+                    toggle.addEventListener('click', () => {
+                        toggle.classList.toggle('active');
+                        this.markDirty();
+                    });
+                });
+            }
+
+            setupRangeSliders() {
+                // Max W/kg slider
+                const maxWkgSlider = document.getElementById('max-wkg');
+                const maxWkgDisplay = document.getElementById('max-wkg-display');
+                maxWkgSlider.addEventListener('input', () => {
+                    maxWkgDisplay.textContent = parseFloat(maxWkgSlider.value).toFixed(1);
+                });
+
+                // Volume slider
+                const volumeSlider = document.getElementById('default-volume');
+                const volumeDisplay = document.getElementById('volume-display');
+                volumeSlider.addEventListener('input', () => {
+                    volumeDisplay.textContent = Math.round(volumeSlider.value * 100) + '%';
+                });
+            }
+
+            setupZoneEditor() {
+                const zonesContainer = document.getElementById('zones-container');
+                const zones = this.config.get('powerBar.zones') || this.getDefaultZones();
+                
+                Object.entries(zones).forEach(([zoneId, zone]) => {
+                    const zoneEditor = this.createZoneEditor(zoneId, zone);
+                    zonesContainer.appendChild(zoneEditor);
+                });
+            }
+
+            createZoneEditor(zoneId, zone) {
+                const editor = document.createElement('div');
+                editor.className = 'zone-editor';
+                editor.innerHTML = `
+                    <h4>${zone.name}</h4>
+                    <div class="zone-controls">
+                        <input type="number" id="zone-${zoneId}-min" value="${zone.min}" step="0.1" min="0" max="20">
+                        <input type="number" id="zone-${zoneId}-max" value="${zone.max}" step="0.1" min="0" max="20">
+                        <input type="color" id="zone-${zoneId}-color" value="${zone.color}">
+                        <div class="zone-preview" style="background-color: ${zone.color}"></div>
+                    </div>
+                `;
+
+                // Update preview when color changes
+                const colorInput = editor.querySelector(`#zone-${zoneId}-color`);
+                const preview = editor.querySelector('.zone-preview');
+                colorInput.addEventListener('change', () => {
+                    preview.style.backgroundColor = colorInput.value;
+                });
+
+                return editor;
+            }
+
+            setupPlaylistEditor() {
+                const defaultPlaylist = [
+                    "https://www.lucadegregorio.it/lucadegre/climber/summit-state-of-mind.mp3",
+                    "https://www.lucadegregorio.it/lucadegre/climber/stand-up-and-climb.mp3",
+                    "https://www.lucadegregorio.it/lucadegre/climber/the-ascent-calls.mp3"
+                ];
+
+                const playlistItems = document.getElementById('playlist-items');
+                defaultPlaylist.forEach((track, index) => {
+                    const item = this.createPlaylistItem(track, index);
+                    playlistItems.appendChild(item);
+                });
+            }
+
+            createPlaylistItem(url, index) {
+                const item = document.createElement('div');
+                item.className = 'playlist-item';
+                item.innerHTML = `
+                    <span>${index + 1}.</span>
+                    <input type="url" value="${url}" placeholder="Track URL">
+                    <button class="btn btn-danger btn-small">Remove</button>
+                `;
+
+                const removeBtn = item.querySelector('.btn-danger');
+                removeBtn.addEventListener('click', () => {
+                    item.remove();
+                    this.markDirty();
+                });
+
+                return item;
+            }
+
+            addPlaylistTrack() {
+                const playlistItems = document.getElementById('playlist-items');
+                const currentCount = playlistItems.children.length;
+                const newItem = this.createPlaylistItem('', currentCount);
+                playlistItems.appendChild(newItem);
+                this.markDirty();
+            }
+
+            loadCurrentSettings() {
+                // Power Bar settings
+                this.setToggle('powerbar-enabled', this.config.get('powerBar.enabled') !== false);
+                this.setValue('max-wkg', this.config.get('powerBar.maxWattsPerKg') || 10);
+                document.getElementById('max-wkg-display').textContent = (this.config.get('powerBar.maxWattsPerKg') || 10).toFixed(1);
+                this.setToggle('show-zone-labels', this.config.get('powerBar.showZoneLabels') !== false);
+                this.setToggle('power-smoothing', this.config.get('powerBar.smoothing') !== false);
+
+                // Audio Player settings
+                this.setToggle('audioplayer-enabled', this.config.get('audioPlayer.enabled') !== false);
+                this.setValue('default-volume', this.config.get('audioPlayer.volume') || 0.8);
+                document.getElementById('volume-display').textContent = Math.round((this.config.get('audioPlayer.volume') || 0.8) * 100) + '%';
+                this.setToggle('default-shuffle', this.config.get('audioPlayer.shuffle') === true);
+                this.setToggle('autoplay', this.config.get('audioPlayer.autoplay') === true);
+                this.setToggle('show-visualizer', this.config.get('audioPlayer.visualizer.enabled') !== false);
+
+                // Dashboard settings
+                this.setToggle('dashboard-enabled', this.config.get('dashboard.enabled') !== false);
+                this.setValue('refresh-rate', this.config.get('dashboard.refreshRate') || 1000);
+                this.setValue('dashboard-theme', this.config.get('dashboard.theme') || 'dark');
+                this.setValue('units', this.config.get('general.units') || 'metric');
+                this.setToggle('show-power', this.config.get('dashboard.showMetrics.power') !== false);
+                this.setToggle('show-speed', this.config.get('dashboard.showMetrics.speed') !== false);
+                this.setToggle('show-hr', this.config.get('dashboard.showMetrics.heartRate') !== false);
+                this.setToggle('show-cadence', this.config.get('dashboard.showMetrics.cadence') !== false);
+
+                // General settings
+                this.setToggle('debug-mode', this.config.get('general.debugMode') === true);
+                this.setToggle('auto-update', this.config.get('general.autoUpdate') !== false);
+                this.setToggle('notifications', this.config.get('general.notifications') !== false);
+                this.setValue('language', this.config.get('general.language') || 'en');
+            }
+
+            setToggle(id, active) {
+                const toggle = document.getElementById(id);
+                if (toggle) {
+                    toggle.classList.toggle('active', active);
+                }
+            }
+
+            setValue(id, value) {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.value = value;
+                }
+            }
+
+            getToggle(id) {
+                const toggle = document.getElementById(id);
+                return toggle ? toggle.classList.contains('active') : false;
+            }
+
+            getValue(id) {
+                const element = document.getElementById(id);
+                return element ? element.value : null;
+            }
+
+            collectSettings() {
+                const settings = {
+                    powerBar: {
+                        enabled: this.getToggle('powerbar-enabled'),
+                        maxWattsPerKg: parseFloat(this.getValue('max-wkg')),
+                        showZoneLabels: this.getToggle('show-zone-labels'),
+                        smoothing: this.getToggle('power-smoothing'),
+                        zones: this.collectZoneSettings()
+                    },
+                    audioPlayer: {
+                        enabled: this.getToggle('audioplayer-enabled'),
+                        volume: parseFloat(this.getValue('default-volume')),
+                        shuffle: this.getToggle('default-shuffle'),
+                        autoplay: this.getToggle('autoplay'),
+                        visualizer: {
+                            enabled: this.getToggle('show-visualizer')
+                        },
+                        customPlaylists: this.collectPlaylistSettings()
+                    },
+                    dashboard: {
+                        enabled: this.getToggle('dashboard-enabled'),
+                        refreshRate: parseInt(this.getValue('refresh-rate')),
+                        theme: this.getValue('dashboard-theme'),
+                        showMetrics: {
+                            power: this.getToggle('show-power'),
+                            speed: this.getToggle('show-speed'),
+                            heartRate: this.getToggle('show-hr'),
+                            cadence: this.getToggle('show-cadence')
+                        }
+                    },
+                    general: {
+                        units: this.getValue('units'),
+                        debugMode: this.getToggle('debug-mode'),
+                        autoUpdate: this.getToggle('auto-update'),
+                        notifications: this.getToggle('notifications'),
+                        language: this.getValue('language')
+                    }
+                };
+
+                return settings;
+            }
+
+            collectZoneSettings() {
+                const zones = {};
+                document.querySelectorAll('.zone-editor').forEach(editor => {
+                    const zoneId = editor.querySelector('input[id*="zone-"]').id.split('-')[1];
+                    const name = editor.querySelector('h4').textContent;
+                    
+                    zones[`zone${zoneId}`] = {
+                        name: name,
+                        min: parseFloat(document.getElementById(`zone-${zoneId}-min`).value),
+                        max: parseFloat(document.getElementById(`zone-${zoneId}-max`).value),
+                        color: document.getElementById(`zone-${zoneId}-color`).value
+                    };
+                });
+                return zones;
+            }
+
+            collectPlaylistSettings() {
+                const tracks = [];
+                document.querySelectorAll('#playlist-items .playlist-item input[type="url"]').forEach(input => {
+                    if (input.value.trim()) {
+                        tracks.push(input.value.trim());
+                    }
+                });
+
+                return tracks.length > 0 ? [{ name: 'Default', tracks, id: Date.now() }] : [];
+            }
+
+            async saveSettings() {
+                try {
+                    const settings = this.collectSettings();
+                    
+                    // Apply settings to config
+                    Object.entries(settings).forEach(([section, sectionSettings]) => {
+                        Object.entries(sectionSettings).forEach(([key, value]) => {
+                            this.config.set(`${section}.${key}`, value);
+                        });
+                    });
+
+                    this.showStatus('Settings saved successfully!', 'success');
+                    this.isDirty = false;
+                    this.originalConfig = JSON.parse(JSON.stringify(this.config.config || {}));
+                    
+                } catch (error) {
+                    console.error('[DEGRE Settings] Save error:', error);
+                    this.showStatus('Failed to save settings', 'error');
+                }
+            }
+
+            applySettings() {
+                this.saveSettings();
+                // Settings are automatically applied through the config change events
+            }
+
+            cancelChanges() {
+                if (this.isDirty && confirm('Discard unsaved changes?')) {
+                    // Restore original config
+                    this.config.config = JSON.parse(JSON.stringify(this.originalConfig));
+                    this.loadCurrentSettings();
+                    this.isDirty = false;
+                    this.showStatus('Changes cancelled', 'success');
+                }
+            }
+
+            exportConfig() {
+                try {
+                    const configJson = this.config.export ? this.config.export() : JSON.stringify(this.config.config, null, 2);
+                    const blob = new Blob([configJson], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `degre-mods-config-${new Date().toISOString().split('T')[0]}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    
+                    this.showStatus('Configuration exported successfully!', 'success');
+                } catch (error) {
+                    console.error('[DEGRE Settings] Export error:', error);
+                    this.showStatus('Failed to export configuration', 'error');
+                }
+            }
+
+            importConfig() {
+                document.getElementById('import-file').click();
+            }
+
+            handleFileImport(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const importedConfig = JSON.parse(e.target.result);
+                        
+                        if (this.config.import) {
+                            const success = this.config.import(e.target.result);
+                            if (success) {
+                                this.loadCurrentSettings();
+                                this.showStatus('Configuration imported successfully!', 'success');
+                                this.markDirty();
+                            } else {
+                                throw new Error('Import failed');
+                            }
+                        } else {
+                            // Fallback: merge with current config
+                            Object.assign(this.config.config, importedConfig);
+                            this.loadCurrentSettings();
+                            this.showStatus('Configuration imported successfully!', 'success');
+                            this.markDirty();
+                        }
+                        
+                    } catch (error) {
+                        console.error('[DEGRE Settings] Import error:', error);
+                        this.showStatus('Failed to import configuration. Invalid file format.', 'error');
+                    }
+                };
+                reader.readAsText(file);
+            }
+
+            resetConfig() {
+                if (confirm('Reset all settings to defaults? This cannot be undone.')) {
+                    if (this.config.reset) {
+                        this.config.reset();
+                    } else {
+                        this.config.config = {};
+                    }
+                    this.loadCurrentSettings();
+                    this.showStatus('Settings reset to defaults', 'success');
+                    this.markDirty();
+                }
+            }
+
+            getDefaultZones() {
+                return {
+                    zone1: { min: 0, max: 2.5, color: '#808080', name: 'Recovery' },
+                    zone2: { min: 2.5, max: 3.5, color: '#0066CC', name: 'Endurance' },
+                    zone3: { min: 3.5, max: 4.5, color: '#00AA00', name: 'Tempo' },
+                    zone4: { min: 4.5, max: 5.5, color: '#FFAA00', name: 'Threshold' },
+                    zone5: { min: 5.5, max: 7.0, color: '#FF6600', name: 'VO2Max' },
+                    zone6: { min: 7.0, max: 12.0, color: '#FF0000', name: 'Neuromuscular' }
+                };
+            }
+
+            markDirty() {
+                if (!this.isDirty) {
+                    this.isDirty = true;
+                    document.title = '• DEGRE Settings';
+                }
+            }
+
+            showStatus(message, type) {
+                this.elements.statusMessage.textContent = message;
+                this.elements.statusMessage.className = `status-message status-${type}`;
+                this.elements.statusMessage.style.display = 'block';
+                
+                setTimeout(() => {
+                    this.elements.statusMessage.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                window.degreSettings = new DegreSettingsPanel();
+                console.log('[DEGRE Settings] Ready');
+            } catch (error) {
+                console.error('[DEGRE Settings] Startup failed:', error);
+            }
+        });
+
+        // Handle beforeunload
+        window.addEventListener('beforeunload', (e) => {
+            if (window.degreSettings && window.degreSettings.isDirty) {
+                e.preventDefault();
+                e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+                return e.returnValue;
+            }
+        });
+    </script>
+</body>
+</html>

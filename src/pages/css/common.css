@@ -1,0 +1,309 @@
+/**
+ * DEGRE Professional Mods - Common Styles
+ * Shared styles for all mod components
+ */
+
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.6;
+}
+
+/* CSS Custom Properties */
+:root {
+    /* Colors */
+    --degre-primary: #4299e1;
+    --degre-primary-dark: #3182ce;
+    --degre-secondary: #667eea;
+    --degre-accent: #48bb78;
+    --degre-warning: #ed8936;
+    --degre-error: #f56565;
+    --degre-success: #48bb78;
+    
+    /* Neutrals */
+    --degre-white: #ffffff;
+    --degre-black: #000000;
+    --degre-gray-50: #f7fafc;
+    --degre-gray-100: #edf2f7;
+    --degre-gray-200: #e2e8f0;
+    --degre-gray-300: #cbd5e0;
+    --degre-gray-400: #a0aec0;
+    --degre-gray-500: #718096;
+    --degre-gray-600: #4a5568;
+    --degre-gray-700: #2d3748;
+    --degre-gray-800: #1a202c;
+    --degre-gray-900: #171923;
+    
+    /* Typography */
+    --degre-font-size-xs: 0.75rem;
+    --degre-font-size-sm: 0.875rem;
+    --degre-font-size-base: 1rem;
+    --degre-font-size-lg: 1.125rem;
+    --degre-font-size-xl: 1.25rem;
+    --degre-font-size-2xl: 1.5rem;
+    --degre-font-size-3xl: 1.875rem;
+    
+    /* Spacing */
+    --degre-space-1: 0.25rem;
+    --degre-space-2: 0.5rem;
+    --degre-space-3: 0.75rem;
+    --degre-space-4: 1rem;
+    --degre-space-5: 1.25rem;
+    --degre-space-6: 1.5rem;
+    --degre-space-8: 2rem;
+    --degre-space-10: 2.5rem;
+    --degre-space-12: 3rem;
+    
+    /* Border Radius */
+    --degre-radius-sm: 0.25rem;
+    --degre-radius-md: 0.375rem;
+    --degre-radius-lg: 0.5rem;
+    --degre-radius-xl: 0.75rem;
+    --degre-radius-full: 9999px;
+    
+    /* Shadows */
+    --degre-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --degre-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --degre-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --degre-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    
+    /* Transitions */
+    --degre-transition-fast: 150ms ease;
+    --degre-transition-base: 250ms ease;
+    --degre-transition-slow: 350ms ease;
+    
+    /* Z-index Scale */
+    --degre-z-tooltip: 1000;
+    --degre-z-modal: 2000;
+    --degre-z-notification: 3000;
+}
+
+/* Component Base Classes */
+.degre-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.degre-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: var(--degre-radius-lg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: var(--degre-space-4);
+    transition: var(--degre-transition-base);
+}
+
+.degre-card:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    box-shadow: var(--degre-shadow-lg);
+}
+
+.degre-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--degre-space-2) var(--degre-space-4);
+    font-size: var(--degre-font-size-sm);
+    font-weight: 600;
+    border: none;
+    border-radius: var(--degre-radius-md);
+    cursor: pointer;
+    transition: var(--degre-transition-fast);
+    text-decoration: none;
+    outline: none;
+}
+
+.degre-button:focus {
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.3);
+}
+
+.degre-button-primary {
+    background: var(--degre-primary);
+    color: var(--degre-white);
+}
+
+.degre-button-primary:hover {
+    background: var(--degre-primary-dark);
+    transform: translateY(-1px);
+}
+
+.degre-button-secondary {
+    background: var(--degre-gray-200);
+    color: var(--degre-gray-700);
+}
+
+.degre-button-secondary:hover {
+    background: var(--degre-gray-300);
+}
+
+.degre-input {
+    width: 100%;
+    padding: var(--degre-space-2) var(--degre-space-3);
+    border: 1px solid var(--degre-gray-300);
+    border-radius: var(--degre-radius-md);
+    font-size: var(--degre-font-size-sm);
+    transition: var(--degre-transition-fast);
+    background: var(--degre-white);
+}
+
+.degre-input:focus {
+    outline: none;
+    border-color: var(--degre-primary);
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+/* Utility Classes */
+.degre-text-xs { font-size: var(--degre-font-size-xs); }
+.degre-text-sm { font-size: var(--degre-font-size-sm); }
+.degre-text-base { font-size: var(--degre-font-size-base); }
+.degre-text-lg { font-size: var(--degre-font-size-lg); }
+.degre-text-xl { font-size: var(--degre-font-size-xl); }
+
+.degre-font-normal { font-weight: 400; }
+.degre-font-medium { font-weight: 500; }
+.degre-font-semibold { font-weight: 600; }
+.degre-font-bold { font-weight: 700; }
+
+.degre-text-center { text-align: center; }
+.degre-text-left { text-align: left; }
+.degre-text-right { text-align: right; }
+
+.degre-flex { display: flex; }
+.degre-inline-flex { display: inline-flex; }
+.degre-grid { display: grid; }
+.degre-block { display: block; }
+.degre-inline-block { display: inline-block; }
+.degre-hidden { display: none; }
+
+.degre-items-center { align-items: center; }
+.degre-items-start { align-items: flex-start; }
+.degre-items-end { align-items: flex-end; }
+
+.degre-justify-center { justify-content: center; }
+.degre-justify-between { justify-content: space-between; }
+.degre-justify-around { justify-content: space-around; }
+
+.degre-m-0 { margin: 0; }
+.degre-m-1 { margin: var(--degre-space-1); }
+.degre-m-2 { margin: var(--degre-space-2); }
+.degre-m-4 { margin: var(--degre-space-4); }
+
+.degre-p-0 { padding: 0; }
+.degre-p-1 { padding: var(--degre-space-1); }
+.degre-p-2 { padding: var(--degre-space-2); }
+.degre-p-4 { padding: var(--degre-space-4); }
+
+.degre-rounded { border-radius: var(--degre-radius-md); }
+.degre-rounded-lg { border-radius: var(--degre-radius-lg); }
+.degre-rounded-full { border-radius: var(--degre-radius-full); }
+
+.degre-shadow { box-shadow: var(--degre-shadow-md); }
+.degre-shadow-lg { box-shadow: var(--degre-shadow-lg); }
+
+/* Animation Classes */
+.degre-animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.degre-animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+.degre-animate-bounce {
+    animation: bounce 1s infinite;
+}
+
+.degre-transition-all {
+    transition: all var(--degre-transition-base);
+}
+
+.degre-transition-colors {
+    transition: color var(--degre-transition-base), background-color var(--degre-transition-base), border-color var(--degre-transition-base);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .degre-hide-mobile { display: none !important; }
+    .degre-show-mobile { display: block !important; }
+}
+
+@media (max-width: 480px) {
+    .degre-hide-small { display: none !important; }
+    .degre-show-small { display: block !important; }
+}
+
+/* Dark Theme Support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --degre-bg-primary: var(--degre-gray-900);
+        --degre-bg-secondary: var(--degre-gray-800);
+        --degre-text-primary: var(--degre-gray-50);
+        --degre-text-secondary: var(--degre-gray-300);
+    }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+    :root {
+        --degre-primary: #0000ff;
+        --degre-error: #ff0000;
+        --degre-success: #008000;
+    }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .degre-no-print {
+        display: none !important;
+    }
+    
+    * {
+        background: transparent !important;
+        color: black !important;
+        box-shadow: none !important;
+    }
+}

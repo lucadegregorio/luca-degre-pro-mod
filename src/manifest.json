@@ -1,0 +1,74 @@
+{
+  "manifest_version": 1,
+  "name": "Luca DEGRE's Professional Mods",
+  "description": "Professional suite of Sauce mods with advanced configuration and features",
+  "author": "Luca De Gregorio",
+  "website_url": "https://lucadegregorio.it",
+  "version": "1.0.0",
+  "min_sauce_version": "1.0.0",
+  "content_js": ["contents/run_everywhere.mjs"],
+  "content_css": ["contents/see_everywhere.css"],
+  "web_root": "pages",
+  "windows": [
+    {
+      "file": "pages/powerbar.html",
+      "id": "degre-powerbar",
+      "name": "DEGRE's Power Bar Pro",
+      "description": "Professional Power Bar with customizable zones and settings",
+      "overlay": true,
+      "frame": false,
+      "resizable": true,
+      "default_bounds": {
+        "width": 80,
+        "height": 400,
+        "x": 50,
+        "y": 100
+      }
+    },
+    {
+      "file": "pages/audioplayer.html",
+      "id": "degre-player",
+      "name": "DEGRE's Audio Player Pro",
+      "description": "Professional Audio Player with playlist management and visualization",
+      "overlay": true,
+      "frame": false,
+      "resizable": true,
+      "default_bounds": {
+        "width": 250,
+        "height": 250,
+        "x": 200,
+        "y": 100
+      }
+    },
+    {
+      "file": "pages/settings.html",
+      "id": "degre-settings",
+      "name": "DEGRE's Settings",
+      "description": "Configuration panel for all DEGRE mods",
+      "overlay": false,
+      "frame": true,
+      "resizable": true,
+      "default_bounds": {
+        "width": 600,
+        "height": 700,
+        "x": 300,
+        "y": 150
+      }
+    },
+    {
+      "file": "pages/dashboard.html",
+      "id": "degre-dashboard",
+      "name": "DEGRE's Dashboard",
+      "description": "Comprehensive data dashboard with real-time metrics",
+      "overlay": true,
+      "frame": true,
+      "resizable": true,
+      "default_bounds": {
+        "width": 400,
+        "height": 300,
+        "x": 100,
+        "y": 200
+      }
+    }
+  ]
+}

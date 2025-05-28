@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEGRE Power Bar Pro</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #powerbar-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #powerbar-header {
+            padding: 8px;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px 10px 0 0;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        #powerbar-main {
+            flex: 1;
+            position: relative;
+            margin: 5px;
+            border-radius: 5px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        #powerbar-zones {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column-reverse;
+        }
+
+        .power-zone {
+            position: relative;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+        }
+
+        .zone-label {
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+            opacity: 0.8;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        #powerbar-fill {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to top, 
+                #808080 0%, 
+                #0066CC 20%, 
+                #00AA00 40%, 
+                #FFAA00 60%, 
+                #FF6600 80%, 
+                #FF0000 100%);
+            transition: height 0.3s ease;
+            border-radius: 0 0 5px 5px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        #powerbar-current {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 14px;
+            font-weight: bold;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            min-width: 60px;
+            text-align: center;
+        }
+
+        #powerbar-wkg {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: bold;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        #settings-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.2s;
+        }
+
+        #settings-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .connection-status {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ff4444;
+            transition: background 0.3s;
+        }
+
+        .connection-status.connected {
+            background: #44ff44;
+            box-shadow: 0 0 8px rgba(68, 255, 68, 0.6);
+        }
+
+        .error-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 68, 68, 0.9);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            text-align: center;
+            display: none;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .pulsing {
+            animation: pulse 1s infinite;
+        }
+
+        /* Responsive design */
+        @media (max-width: 100px) {
+            .zone-label {
+                display: none;
+            }
+            
+            #powerbar-header {
+                font-size: 10px;
+                padding: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="powerbar-container">
+        <div id="powerbar-header">
+            <span id="header-text">Power Zones</span>
+            <button id="settings-btn" title="Settings">⚙</button>
+        </div>
+        
+        <div id="powerbar-main">
+            <div id="powerbar-zones"></div>
+            <div id="powerbar-fill" style="height: 0%"></div>
+            <div id="powerbar-wkg">0.0 W/kg</div>
+            <div id="powerbar-current">0W</div>
+        </div>
+        
+        <div class="connection-status" id="connection-status"></div>
+        <div class="error-message" id="error-message"></div>
+    </div>
+
+    <script>
+        class DegrePowerBarPro {
+            constructor() {
+                this.config = window.degreConfig || this.createFallbackConfig();
+                this.api = window.degreAPI || this.createFallbackAPI();
+                
+                this.elements = {
+                    container: document.getElementById('powerbar-container'),
+                    zones: document.getElementById('powerbar-zones'),
+                    fill: document.getElementById('powerbar-fill'),
+                    current: document.getElementById('powerbar-current'),
+                    wkg: document.getElementById('powerbar-wkg'),
+                    connectionStatus: document.getElementById('connection-status'),
+                    errorMessage: document.getElementById('error-message'),
+                    settingsBtn: document.getElementById('settings-btn')
+                };
+                
+                this.currentPower = 0;
+                this.currentWeight = 70; // Default weight
+                this.updateInterval = null;
+                this.smoothingBuffer = [];
+                this.smoothingSize = 5;
+                
+                this.init();
+            }
+
+            createFallbackConfig() {
+                return {
+                    get: (path) => {
+                        const defaults = {
+                            'powerBar.maxWattsPerKg': 10,
+                            'powerBar.showZoneLabels': true,
+                            'powerBar.showCurrentValue': true,
+                            'powerBar.smoothing': true,
+                            'powerBar.animationSpeed': 300,
+                            'powerBar.zones': {
+                                zone1: { min: 0, max: 2.5, color: '#808080', name: 'Recovery' },
+                                zone2: { min: 2.5, max: 3.5, color: '#0066CC', name: 'Endurance' },
+                                zone3: { min: 3.5, max: 4.5, color: '#00AA00', name: 'Tempo' },
+                                zone4: { min: 4.5, max: 5.5, color: '#FFAA00', name: 'Threshold' },
+                                zone5: { min: 5.5, max: 7.0, color: '#FF6600', name: 'VO2Max' },
+                                zone6: { min: 7.0, max: 12.0, color: '#FF0000', name: 'Neuro' }
+                            }
+                        };
+                        return defaults[path] || null;
+                    }
+                };
+            }
+
+            createFallbackAPI() {
+                return {
+                    connectWebSocket: () => {},
+                    on: () => {},
+                    getWatching: async () => ({ state: { power: 0, weight: 70 } }),
+                    isHealthy: async () => false
+                };
+            }
+
+            async init() {
+                try {
+                    this.setupUI();
+                    this.setupEventListeners();
+                    await this.connectToAPI();
+                    this.startUpdates();
+                    
+                    console.log('[DEGRE PowerBar] Initialized successfully');
+                } catch (error) {
+                    console.error('[DEGRE PowerBar] Initialization failed:', error);
+                    this.showError('Initialization failed');
+                }
+            }
+
+            setupUI() {
+                this.createZones();
+                this.applyConfiguration();
+            }
+
+            createZones() {
+                const zones = this.config.get('powerBar.zones');
+                const maxWkg = this.config.get('powerBar.maxWattsPerKg');
+                const showLabels = this.config.get('powerBar.showZoneLabels');
+                
+                this.elements.zones.innerHTML = '';
+                
+                Object.entries(zones).forEach(([zoneId, zone]) => {
+                    const zoneElement = document.createElement('div');
+                    zoneElement.className = 'power-zone';
+                    zoneElement.id = `zone-${zoneId}`;
+                    
+                    const heightPercent = ((zone.max - zone.min) / maxWkg) * 100;
+                    zoneElement.style.height = `${heightPercent}%`;
+                    zoneElement.style.backgroundColor = `${zone.color}33`; // 20% opacity
+                    zoneElement.style.borderLeft = `3px solid ${zone.color}`;
+                    
+                    if (showLabels) {
+                        const label = document.createElement('div');
+                        label.className = 'zone-label';
+                        label.textContent = `${zone.name} (${zone.min}-${zone.max})`;
+                        zoneElement.appendChild(label);
+                    }
+                    
+                    this.elements.zones.appendChild(zoneElement);
+                });
+            }
+
+            setupEventListeners() {
+                // Settings button
+                this.elements.settingsBtn.addEventListener('click', () => {
+                    this.openSettings();
+                });
+
+                // Configuration changes
+                if (this.config.onChange) {
+                    this.config.onChange((newConfig) => {
+                        console.log('[DEGRE PowerBar] Configuration updated');
+                        this.applyConfiguration();
+                        this.createZones();
+                    });
+                }
+
+                // Window visibility
+                document.addEventListener('visibilitychange', () => {
+                    if (document.hidden) {
+                        this.pauseUpdates();
+                    } else {
+                        this.resumeUpdates();
+                    }
+                });
+
+                // Cleanup on unload
+                window.addEventListener('beforeunload', () => {
+                    this.cleanup();
+                });
+            }
+
+            async connectToAPI() {
+                try {
+                    // Check if API is healthy
+                    const isHealthy = await this.api.isHealthy();
+                    if (!isHealthy) {
+                        throw new Error('Sauce API not available');
+                    }
+
+                    // Connect WebSocket
+                    this.api.connectWebSocket();
+
+                    // Setup API event listeners
+                    this.api.on('connected', () => {
+                        this.updateConnectionStatus(true);
+                        console.log('[DEGRE PowerBar] API connected');
+                    });
+
+                    this.api.on('disconnected', () => {
+                        this.updateConnectionStatus(false);
+                        console.log('[DEGRE PowerBar] API disconnected');
+                    });
+
+                    this.api.on('error', (error) => {
+                        this.updateConnectionStatus(false);
+                        this.showError('Connection error');
+                    });
+
+                    this.api.on('athlete/watching', (data) => {
+                        this.handleAthleteData(data);
+                    });
+
+                } catch (error) {
+                    this.updateConnectionStatus(false);
+                    throw error;
+                }
+            }
+
+            startUpdates() {
+                if (this.updateInterval) return;
+
+                this.updateInterval = setInterval(async () => {
+                    try {
+                        const watching = await this.api.getWatching();
+                        this.handleAthleteData(watching);
+                    } catch (error) {
+                        console.error('[DEGRE PowerBar] Update error:', error);
+                    }
+                }, 1000);
+
+                console.log('[DEGRE PowerBar] Updates started');
+            }
+
+            pauseUpdates() {
+                if (this.updateInterval) {
+                    clearInterval(this.updateInterval);
+                    this.updateInterval = null;
+                }
+            }
+
+            resumeUpdates() {
+                if (!this.updateInterval) {
+                    this.startUpdates();
+                }
+            }
+
+            handleAthleteData(data) {
+                if (!data || !data.state) return;
+
+                const { power, weight } = data.state;
+                
+                if (weight) this.currentWeight = weight;
+                this.currentPower = power || 0;
+
+                const wattsPerKg = this.currentPower / this.currentWeight;
+                
+                // Apply smoothing if enabled
+                if (this.config.get('powerBar.smoothing')) {
+                    this.smoothingBuffer.push(wattsPerKg);
+                    if (this.smoothingBuffer.length > this.smoothingSize) {
+                        this.smoothingBuffer.shift();
+                    }
+                    const smoothedWkg = this.smoothingBuffer.reduce((sum, val) => sum + val, 0) / this.smoothingBuffer.length;
+                    this.updatePowerBar(smoothedWkg);
+                } else {
+                    this.updatePowerBar(wattsPerKg);
+                }
+
+                this.updateCurrentValues();
+                this.highlightCurrentZone(wattsPerKg);
+            }
+
+            updatePowerBar(wattsPerKg) {
+                const maxWkg = this.config.get('powerBar.maxWattsPerKg');
+                const percentage = Math.min((wattsPerKg / maxWkg) * 100, 100);
+                
+                this.elements.fill.style.height = `${percentage}%`;
+                
+                // Update gradient based on current zone
+                const zones = this.config.get('powerBar.zones');
+                const currentZone = this.getCurrentZone(wattsPerKg, zones);
+                
+                if (currentZone) {
+                    this.elements.fill.style.background = `linear-gradient(to top, ${currentZone.color}88, ${currentZone.color}ff)`;
+                }
+            }
+
+            updateCurrentValues() {
+                if (this.config.get('powerBar.showCurrentValue')) {
+                    this.elements.current.textContent = `${Math.round(this.currentPower)}W`;
+                    this.elements.wkg.textContent = `${(this.currentPower / this.currentWeight).toFixed(1)} W/kg`;
+                }
+            }
+
+            highlightCurrentZone(wattsPerKg) {
+                const zones = this.config.get('powerBar.zones');
+                const currentZone = this.getCurrentZone(wattsPerKg, zones);
+                
+                // Reset all zones
+                document.querySelectorAll('.power-zone').forEach(zone => {
+                    zone.classList.remove('pulsing');
+                    zone.style.backgroundColor = zone.style.backgroundColor.replace('88', '33');
+                });
+                
+                // Highlight current zone
+                if (currentZone) {
+                    const zoneElement = document.getElementById(`zone-${currentZone.id}`);
+                    if (zoneElement) {
+                        zoneElement.classList.add('pulsing');
+                        zoneElement.style.backgroundColor = `${currentZone.color}88`;
+                    }
+                }
+            }
+
+            getCurrentZone(wattsPerKg, zones) {
+                for (const [zoneId, zone] of Object.entries(zones)) {
+                    if (wattsPerKg >= zone.min && wattsPerKg < zone.max) {
+                        return { id: zoneId, ...zone };
+                    }
+                }
+                return null;
+            }
+
+            updateConnectionStatus(connected) {
+                this.elements.connectionStatus.classList.toggle('connected', connected);
+            }
+
+            showError(message) {
+                this.elements.errorMessage.textContent = message;
+                this.elements.errorMessage.style.display = 'block';
+                
+                setTimeout(() => {
+                    this.elements.errorMessage.style.display = 'none';
+                }, 5000);
+            }
+
+            applyConfiguration() {
+                const animationSpeed = this.config.get('powerBar.animationSpeed');
+                if (animationSpeed) {
+                    this.elements.fill.style.transition = `height ${animationSpeed}ms ease`;
+                }
+            }
+
+            openSettings() {
+                // Try to open settings window
+                if (window.sauce && window.sauce.openWindow) {
+                    window.sauce.openWindow('degre-settings');
+                } else {
+                    console.log('[DEGRE PowerBar] Settings window not available');
+                }
+            }
+
+            cleanup() {
+                this.pauseUpdates();
+                if (this.api && this.api.disconnect) {
+                    this.api.disconnect();
+                }
+                console.log('[DEGRE PowerBar] Cleaned up');
+            }
+
+            // Public API
+            getCurrentPower() {
+                return this.currentPower;
+            }
+
+            getCurrentWattsPerKg() {
+                return this.currentPower / this.currentWeight;
+            }
+
+            getConfig() {
+                return this.config;
+            }
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                window.degrePowerBar = new DegrePowerBarPro();
+                console.log('[DEGRE PowerBar] Ready');
+            } catch (error) {
+                console.error('[DEGRE PowerBar] Startup failed:', error);
+            }
+        });
+    </script>
+</body>
+</html>
