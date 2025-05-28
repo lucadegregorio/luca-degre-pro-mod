@@ -1,6 +1,6 @@
-# DEGRE Professional Mods for Sauce4Zwift
+# Luca DEGRE PRO Mods for Sauce4Zwift
 
-A professional suite of mods for Sauce4Zwift that enhances your Zwift experience with advanced power visualization, music playback, and comprehensive data monitoring.
+A suite of mods for Sauce4Zwift that enhances your Zwift experience with advanced power visualization, music playback, and comprehensive data monitoring.
 
 ## ?? Features
 
